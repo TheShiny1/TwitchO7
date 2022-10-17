@@ -21,7 +21,7 @@ def sql_executor(myCommand_str):
 
 
 def main():
-	st.title("My Web-Based DBMS")
+	st.title("TwitchO7: The Twitch Streamer Database")
 
 	menu = ["Home","About"]
 	choice = st.sidebar.selectbox("Menu",menu)
@@ -86,7 +86,7 @@ def main():
 
 	else:
 		st.subheader("About")
-		st.write("Put about information here!! ")
+		st.write("Welcome to TwitchO7! The small streamer database ")
 
 
 if __name__ == '__main__':
