@@ -1,0 +1,22 @@
+PRAGMA foreign_keys = ON; /* Enable foreign keys */
+
+
+
+drop table Streamers;
+create table Streamers (
+username     varchar primary key,
+avgViews     varchar,
+followers    varchar);
+
+
+INSERT INTO Streamers VALUES ("xQc","58,585","11,314,090");
+INSERT INTO Streamers VALUES ("AuronPlays","77,309","14,015,637");
+INSERT INTO Streamers VALUES ("KaiCenat","58,247","2,678,534");
+INSERT INTO Streamers VALUES ("HasanAbi","29,752","2,258,824");
+INSERT INTO Streamers VALUES ("Artosis","1,620","147,196");
+INSERT INTO Streamers VALUES ("Shroud","18,818","10,402,550");
+
+
+
+
+/* Usage: cat streamerDB_build.txt | sqlite3 streamerDB.sqlite3 */

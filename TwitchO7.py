@@ -4,7 +4,7 @@ import pandas as pd
 # DB Mgmt
 import sqlite3
 
-myDBFile_str = "myCampusDB.sqlite3"
+myDBFile_str = "streamerDB.sqlite3"
 conn = sqlite3.connect(myDBFile_str)
 c = conn.cursor()
 
