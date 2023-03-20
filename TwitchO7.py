@@ -60,7 +60,7 @@ while True:
                     os.makedirs(f"data/{username}/{day_of_week}")
                 with open(filename, mode='w', newline='') as csv_file:
                     writer = csv.writer(csv_file)
-                    writer.writerow(['date', 'Timestamp', 'Viewer Count'])
+                    writer.writerow(['Date', 'Timestamp', 'Viewer Count'])
                     for i in range(len(viewer_count_list)):
                         writer.writerow([date_list[i], timestamp_list[i], viewer_count_list[i]])
 
