@@ -1,93 +1,84 @@
-import streamlit as st
-import pandas as pd
+import os
+import requests
+import json
+import plotly.graph_objects as go
+import datetime
+import time
+import csv
 
-# DB Mgmt
-import sqlite3
+# Create a directory called "data" if it doesn't exist
+if not os.path.exists('data'):
+    os.makedirs('data')
 
-myDBFile_str = "streamerDB.sqlite3"
-conn = sqlite3.connect(myDBFile_str)
-c = conn.cursor()
+# Set up the Twitch API endpoint and headers
+username = input("Enter Streamer's username in the URL: ")
+API_ENDPOINT = ("https://api.twitch.tv/helix/streams?user_login=" + username)
 
+Client_ID = '9aijwarjiiuslg7ixm1tymagpoo38c'
+oauth = 'Bearer xm23gkwmklkbtj1wdbmyxvwt52cdqc'
 
-# Fxn Make Execution
-def sql_executor(myCommand_str):
-	""" function to complete the query and parse results from a query."""
-	c.execute(myCommand_str)
-	data = c.fetchall()
-	return data
-# end of sql_executor()
+head = {
+  'Client-ID' : Client_ID,
+  'authorization' : oauth
+}
 
+# Initialize a variable to keep track of the stream status
+is_streaming = False
 
+while True:
+    # Get the stream data from the Twitch API
+    r = requests.get(url = API_ENDPOINT, headers = head)
+    json_data = r.text
+    data_dict = json.loads(json_data)
 
+    # Check if the stream is currently live
+    if data_dict["data"] != [] and not is_streaming:
+        print("Stream is now live!")
 
-def main():
-	st.title("TwitchO7: The Twitch Streamer Database")
+        # Set the stream status to True and initialize empty lists to store the viewer_count and timestamp
+        is_streaming = True
+        viewer_count_list = []
+        timestamp_list = []
+        date_list = []
 
-	menu = ["Home","About"]
-	choice = st.sidebar.selectbox("Menu",menu)
+        # Start fetching viewer count and timestamp data
+        while is_streaming:
+            r = requests.get(url = API_ENDPOINT, headers = head)
+            json_data = r.text
+            data_dict = json.loads(json_data)
 
-	if choice == "Home":
-		st.subheader("Database Output")
+            if data_dict["data"] == []:
+                # Stream is offline, plot the graph, save the data to a CSV file, and set the stream status to False
+                fig = go.Figure(data=go.Scatter(x=timestamp_list, y=viewer_count_list, mode='lines'))
+                fig.update_layout(title='Viewer Count over Time', xaxis_title='Time of Day', yaxis_title='Viewer Count')
+                fig.show()
 
-		# Columns/Layout
-		myCol1, myCol2 = st.columns(2)
+                timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H")
+                day_of_week = datetime.datetime.today().strftime("%A")
+                filename = f"data/{username}/{day_of_week}/viewer_count_data_{timestamp}.csv"
+                if not os.path.exists(f"data/{username}/{day_of_week}"):
+                    os.makedirs(f"data/{username}/{day_of_week}")
+                with open(filename, mode='w', newline='') as csv_file:
+                    writer = csv.writer(csv_file)
+                    writer.writerow(['date', 'Timestamp', 'Viewer Count'])
+                    for i in range(len(viewer_count_list)):
+                        writer.writerow([date_list[i], timestamp_list[i], viewer_count_list[i]])
 
+                is_streaming = False
+            else:
+                # Get the viewer_count and current timestamp
+                viewer_count = data_dict["data"][0]["viewer_count"]
+                timestamp = datetime.datetime.now().strftime("%H:%M:%S")
+                date = datetime.datetime.now().strftime("%Y-%m-%d")
 
-		# Results Layouts
-		with myCol1:
-			with st.form(key='query_form'):
-				myCommand_str = st.text_area("SQL Code Here")
-				submit_button = st.form_submit_button("Execute")
-
-				# commit_code = st.form_submit_button("Commit Changes")
-
-				# st.balloons() # show some balloons!
-				# st.snow()
-				# st.success("oh yeah")
-				# st.error("oh yeah")
-
-
-				st.write("Command to list tables.")
-				copyThis_tmp = "SELECT name FROM sqlite_master WHERE type='table';"
-				st.code(copyThis_tmp, language = 'bash')
-# not all tables are displayed with this code. Read all about it at the below reference.
-# ref: https://database.guide/2-ways-to-list-tables-in-sqlite-database/
-
-
-
-			if submit_button:
-				st.info("Query Submitted")
-				st.code(myCommand_str)
-
-				# Results
-				query_results = sql_executor(myCommand_str)
-				with st.expander("Results"):
-					st.write(query_results)
-
-				with st.expander("Pretty Table"):
-					query_df = pd.DataFrame(query_results)
-					st.dataframe(query_df)
-
-
-		with myCol2:
-
-			with st.form(key='row1'):
-				st.write("Query")
-
-				myTable_str = st.text_input("Enter Table name")
-				q_attribute1_str = st.text_input("Enter 1st attribute name")
-				q_attribute2_str = st.text_input("Enter 2nd attribute name")
-				myQueryButton = st.form_submit_button("Build Query String")
-
-				if myQueryButton: # if clicked
-					myQuery_str = f"SELECT {q_attribute1_str},{q_attribute2_str} FROM {myTable_str}"
-					st.code(myQuery_str , language = 'bash')
+                # Append the viewer_count and timestamp to the respective lists
+                viewer_count_list.append(viewer_count)
+                timestamp_list.append(timestamp)
+                date_list.append(date)
 
 
-	else:
-		st.subheader("About")
-		st.write("Welcome to TwitchO7! The small streamer database ")
-
-
-if __name__ == '__main__':
-	main()
+                # Wait for 2 minutes before fetching the viewer count again
+                time.sleep(120)
+    else:
+        # Stream is offline or program is already running, wait for 1 minute before checking again
+        time.sleep(60)
