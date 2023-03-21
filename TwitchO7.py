@@ -55,7 +55,7 @@ while True:
 
                 timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H")
                 day_of_week = datetime.datetime.today().strftime("%A")
-                filename = f"data/{username}/{day_of_week}/viewer_count_data_{timestamp}.csv"
+                filename = f"data/{username}/{day_of_week}/{timestamp}.csv"
                 if not os.path.exists(f"data/{username}/{day_of_week}"):
                     os.makedirs(f"data/{username}/{day_of_week}")
                 with open(filename, mode='w', newline='') as csv_file:

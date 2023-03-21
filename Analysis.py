@@ -1,28 +1,34 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.linear_model import LinearRegression
+import os
 
-# read in the csv files and combine them into a single DataFrame
-file_names = ['data/moistcr1tikal/viewer_count_data_2023-03-07_22.csv', 'data/moistcr1tikal/viewer_count_data_2023-03-08_22.csv', 'data/moistcr1tikal/viewer_count_data_2023-03-10_11.csv','data/moistcr1tikal/viewer_count_data_2023-03-15 02.csv','data/moistcr1tikal/viewer_count_data_2023-03-19 02.csv']
-df = pd.concat([pd.read_csv(file) for file in file_names])
+# set the path of the directory where the CSV files are located
+path = 'data/moistcr1tikal/'
 
-# convert the 'Timestamp' column to datetime and set it as the index
-df['Timestamp'] = pd.to_datetime(df['Timestamp'])
-df.set_index('Timestamp', inplace=True)
+# read all the CSV files in the directory and store them in a list
+csv_files = [file for file in os.listdir(path) if file.endswith('.csv')]
 
-# group the data by hour and calculate the mean viewer count
-hourly_viewer_count = df.groupby(pd.Grouper(freq='H'))['Viewer Count'].mean()
+# combine all the CSV files into a single dataframe
+combined_df = pd.concat([pd.read_csv(os.path.join(path, file)) for file in csv_files])
 
-# create a line plot of the viewer count over time
-hourly_viewer_count.plot()
-plt.xlabel('Time')
-plt.ylabel('Viewer Count')
-plt.title('Viewer Count Over Time')
+# calculate the average viewer count of all the CSV files combined
+average_viewer_count = combined_df['Viewer Count'].mean()
+
+# create a list to store the average viewer count of each CSV file
+average_viewer_counts = []
+
+# loop through the list of CSV files and calculate the average viewer count of each file
+for file in csv_files:
+    df = pd.read_csv(os.path.join(path, file))
+    average_viewer_count_per_file = df['Viewer Count'].mean()
+    average_viewer_counts.append(average_viewer_count_per_file)
+
+# plot the average viewer count of each CSV file and the average viewer count of all the CSV files combined
+plt.bar(range(len(csv_files)), average_viewer_counts, align='center', alpha=0.5, label='CSV File Average Viewer Count')
+plt.axhline(y=average_viewer_count, color='r', linestyle='-', label='Combined Average Viewer Count')
+plt.xticks(range(len(csv_files)), csv_files)
+plt.xlabel('CSV Files')
+plt.ylabel('Average Viewer Count')
+plt.title('CSV File Viewer Count Comparison')
+plt.legend(loc='best')
 plt.show()
-
-# use linear regression to predict the outcome for the next hour
-X = hourly_viewer_count.index.astype(int).values.reshape(-1, 1)
-y = hourly_viewer_count.values.reshape(-1, 1)
-reg = LinearRegression().fit(X, y)
-next_hour = reg.predict([[hourly_viewer_count.index[-1].value + 3600]])
-print('Predicted viewer count for the next hour:', next_hour[0][0])
