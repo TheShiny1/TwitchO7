@@ -53,7 +53,7 @@ while True:
                 fig.update_layout(title='Viewer Count over Time', xaxis_title='Time of Day', yaxis_title='Viewer Count')
                 fig.show()
 
-                timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H")
+                timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H")
                 day_of_week = datetime.datetime.today().strftime("%A")
                 filename = f"data/{username}/{day_of_week}/{timestamp}.csv"
                 if not os.path.exists(f"data/{username}/{day_of_week}"):
