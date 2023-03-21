@@ -1,34 +1,41 @@
-import pandas as pd
-import matplotlib.pyplot as plt
 import os
+import pandas as pd
 
-# set the path of the directory where the CSV files are located
-path = 'data/moistcr1tikal/'
+# set the directory path
+dir_path = input("Input path to directory that you want to analyze: ")
 
-# read all the CSV files in the directory and store them in a list
-csv_files = [file for file in os.listdir(path) if file.endswith('.csv')]
+# read all csv files in the directory
+csv_files = [f for f in os.listdir(dir_path) if f.endswith('.csv')]
 
-# combine all the CSV files into a single dataframe
-combined_df = pd.concat([pd.read_csv(os.path.join(path, file)) for file in csv_files])
+# create an empty list to store the combined data from all files
+combined_data = []
 
-# calculate the average viewer count of all the CSV files combined
-average_viewer_count = combined_df['Viewer Count'].mean()
-
-# create a list to store the average viewer count of each CSV file
-average_viewer_counts = []
-
-# loop through the list of CSV files and calculate the average viewer count of each file
+# loop through the csv files and append their data to the combined_data list
 for file in csv_files:
-    df = pd.read_csv(os.path.join(path, file))
-    average_viewer_count_per_file = df['Viewer Count'].mean()
-    average_viewer_counts.append(average_viewer_count_per_file)
+    file_path = os.path.join(dir_path, file)
+    data = pd.read_csv(file_path)
+    combined_data.append(data)
 
-# plot the average viewer count of each CSV file and the average viewer count of all the CSV files combined
-plt.bar(range(len(csv_files)), average_viewer_counts, align='center', alpha=0.5, label='CSV File Average Viewer Count')
-plt.axhline(y=average_viewer_count, color='r', linestyle='-', label='Combined Average Viewer Count')
-plt.xticks(range(len(csv_files)), csv_files)
-plt.xlabel('CSV Files')
-plt.ylabel('Average Viewer Count')
-plt.title('CSV File Viewer Count Comparison')
-plt.legend(loc='best')
-plt.show()
+# combine all the data from the csv files
+all_data = pd.concat(combined_data)
+
+# calculate the average viewer count of all the csv files combined
+average_viewer_count = all_data["Viewer Count"].mean()
+
+# print out the average viewer count
+print("The average viewer count of all the csv files combined is:", average_viewer_count)
+
+# loop through the csv files again and find the timestamps where the viewer count is higher than the average
+for file in csv_files:
+    file_path = os.path.join(dir_path, file)
+    data = pd.read_csv(file_path)
+    above_average_data = data[data["Viewer Count"] > average_viewer_count]
+    if not above_average_data.empty:
+        print("Timestamps in file", file, "where viewer count is higher than the average:")
+        
+        # find the start and end timestamp where the viewer count is higher than the average
+        above_average_data.reset_index(drop=True, inplace=True)
+        start_timestamp = above_average_data.iloc[0]["Timestamp"]
+        end_timestamp = above_average_data.iloc[-1]["Timestamp"]
+        print("Start timestamp:", start_timestamp)
+        print("End timestamp:", end_timestamp)
