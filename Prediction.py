@@ -41,10 +41,6 @@ if not above_average_data.empty:
     # find the pattern of the start and end timestamp where the viewer count is higher than the average
     pattern_start = start_timestamp
     pattern_end = end_timestamp
-    for i in range(1, len(above_average_data)):
-        if above_average_data.iloc[i]["Timestamp"] != above_average_data.iloc[i-1]["Timestamp"] + pd.Timedelta(minutes=2):
-            pattern_end = above_average_data.iloc[i-1]["Timestamp"]
-            pattern_start = above_average_data.iloc[i]["Timestamp"]
-    pattern_end = end_timestamp
+
 else:
     print("There is no data where viewer count is higher than the average.")
