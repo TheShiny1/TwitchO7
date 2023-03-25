@@ -26,9 +26,7 @@ average_viewer_count = all_data["Viewer Count"].mean()
 # print out the average viewer count
 print("The average viewer count of all the csv files combined is:", average_viewer_count)
 
-# create empty lists to store start and end timestamps where viewer count is higher than average
-start_timestamps = []
-end_timestamps = []
+timestamps = pd.DataFrame(columns=['Start Timestamp', 'End Timestamp'])
 
 # loop through the csv files again and find the timestamps where the viewer count is higher than the average
 for file in csv_files:
@@ -40,13 +38,12 @@ for file in csv_files:
         above_average_data.reset_index(drop=True, inplace=True)
         start_timestamp = above_average_data.iloc[0]["Timestamp"]
         end_timestamp = above_average_data.iloc[-1]["Timestamp"]
-        start_timestamps.append(start_timestamp)
-        end_timestamps.append(end_timestamp)
+        timestamps = timestamps.append({'Start Timestamp': start_timestamp, 'End Timestamp': end_timestamp}, ignore_index=True)
 
-# calculate mode of start and end timestamps
-mode_start = mode(start_timestamps)
-mode_end = mode(end_timestamps)
+# calculate the median of the start and end timestamps
+median_start_timestamp = pd.to_datetime(timestamps['Start Timestamp']).median().strftime('%H:%M:%S')
+median_end_timestamp = pd.to_datetime(timestamps['End Timestamp']).median().strftime('%H:%M:%S')
 
-# print out the mode of start and end timestamps
-print("Mode of start timestamp where viewer count is higher than the average:", mode_start)
-print("Mode of end timestamp where viewer count is higher than the average:", mode_end)
+# print out the median start and end timestamps
+print("Median start timestamp where viewer count is higher than the average:", median_start_timestamp)
+print("Median end timestamp where viewer count is higher than the average:", median_end_timestamp)
