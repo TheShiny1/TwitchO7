@@ -11,11 +11,11 @@ if not os.path.exists('data'):
     os.makedirs('data')
 
 # Set up the Twitch API endpoint and headers
-username = input("Enter Streamer's username in the URL: ")
+username = input("Enter Streamer's username in the URL: ").lowercase()
 API_ENDPOINT = ("https://api.twitch.tv/helix/streams?user_login=" + username)
 
-Client_ID = '9aijwarjiiuslg7ixm1tymagpoo38c'
-oauth = 'Bearer xm23gkwmklkbtj1wdbmyxvwt52cdqc'
+Client_ID = input("Enter Client_ID: ")
+oauth = input("Enter the token_type and the access_token with a space in between: ")
 
 head = {
   'Client-ID' : Client_ID,
