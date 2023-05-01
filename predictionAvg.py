@@ -2,8 +2,7 @@ import os
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 
-path = 'data/moistcr1tikal/Wednesday'
-
+path = input("Input path to directory that you want to analyze: ")
 averages = []
 
 for filename in os.listdir(path):
