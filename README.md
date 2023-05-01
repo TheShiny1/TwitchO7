@@ -1,4 +1,4 @@
-# TwitchO7: Using Data to Help Small Streamers Grow on Twitch
+# TwitchO7: Using Data to Help Streamers Grow on Twitch
 
 ## Installations
 1. Clone Repository.
