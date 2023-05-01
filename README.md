@@ -23,6 +23,7 @@ curl -X POST 'https://id.twitch.tv/oauth2/token' \
 ```
 pip install plotly
 pip install DateTime
+pip install -U scikit-learn
 ```
 
 7. Run TwitchO7 to collect data. Make sure when you enter in the authorization key that the 'B' in Bearer is capitalized and there is a space between the token_type and and access_token.
@@ -48,5 +49,7 @@ To access file directory, type this:
 <streamer username>/<day of the week>
 ```
 
+10. To visualize the data
+
 ## Results
-The results of these tools will give data of the Twitch streamer that they are analyzing to find the time frame when their viewership is above average. Note that each streamer is different along with each category they stream and that these are recommendations. There is no guarantee that this will increase viewership, only that the tool will give insightful data to the user.
+The results of these tools will give data of the Twitch streamer that they are analyzing to find the time frame when their viewership is above average and a prediction of the average of the next stream. Note that each streamer is different along with each category they stream and that these are recommendations. There is no guarantee that this will increase viewership, only that the tool will give insightful data to the user.
