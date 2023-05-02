@@ -15,7 +15,8 @@ username = input("Enter Streamer's username in the URL: ")
 API_ENDPOINT = ("https://api.twitch.tv/helix/streams?user_login=" + username)
 
 Client_ID = input("Enter Client_ID: ")
-oauth = input("Enter the token_type and the access_token with a space in between: ")
+oauth_input = input("Enter the access_token: ")
+oauth = ("Bearer " + oauth_input)
 
 head = {
   'Client-ID' : Client_ID,
