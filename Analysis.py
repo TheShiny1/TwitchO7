@@ -25,6 +25,12 @@ average_viewer_count = all_data["Viewer Count"].mean()
 # print out the average viewer count
 print("The average viewer count of all the csv files combined is:", average_viewer_count)
 
+for file in csv_files:
+    file_path = os.path.join(dir_path, file)
+    data = pd.read_csv(file_path)
+    file_average_viewer_count = data["Viewer Count"].mean()
+    print(f"The average viewer count of {file} is:", file_average_viewer_count)
+
 # loop through the csv files again and find the timestamps where the viewer count is higher than the average
 for file in csv_files:
     file_path = os.path.join(dir_path, file)
