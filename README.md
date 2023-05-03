@@ -37,19 +37,36 @@ python Analysis.py
 ```
 To access file directory, type this:
 ```
-<streamer username>/<day of the week>
+data/<streamer username>/<day of the week>
 ```
 
-9. To analyze the data without through an algorithm and receive a recommendation for the times where the streamer's viewer count was above average, run this code:
+9. To analyze the data without through an algorithm and receive a recommendation for the times where the streamer's viewer count was above average, run this command:
 ```
 python Recommendation.py
 ```
 To access file directory, type this:
 ```
-<streamer username>/<day of the week>
+data/<streamer username>/<day of the week>
 ```
 
-10. To visualize the data
+10. To visualize the data by seeing the trend in data and comparing it to the average viewer count of that day of the week, type this command:
+```
+python Visualization.py
+```
+To access file directory, type this:
+```
+data/<streamer username>/<day of the week>
+```
+
+11. Lastly, to see the general trend in data regarding viewership averge for this day, run this command:
+```
+python predictAvg.py
+```
+To access file directory, type this:
+```
+data/<streamer username>/<day of the week>
+```
+
 
 ## Results
 The results of these tools will give data of the Twitch streamer that they are analyzing to find the time frame when their viewership is above average and a prediction of the average of the next stream. Note that each streamer is different along with each category they stream and that these are recommendations. There is no guarantee that this will increase viewership, only that the tool will give insightful data to the user.
